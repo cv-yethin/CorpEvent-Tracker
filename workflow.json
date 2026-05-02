@@ -1,0 +1,789 @@
+{
+  "name": "Boardroom Stalker🧑‍💼",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "832e57fc-cf8b-4992-a2a0-a4bb93435dd7",
+              "leftValue": "={{ $json.Name }}",
+              "rightValue": "BEES",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "20e10358-485e-4eab-a94d-5122c77224b8",
+              "leftValue": "={{ $json.Name }}",
+              "rightValue": "ETF",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "31f09a6f-9b3e-453a-b15c-5f33c6b0bbef",
+              "leftValue": "={{ $json.Name }}",
+              "rightValue": "IPO",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "874feaca-52c0-4cd9-b9c2-e032dc25fb17",
+              "leftValue": "={{ $json.Name }}",
+              "rightValue": "EVINDIA",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        -96
+      ],
+      "id": "1cf7a3c5-eb3b-492f-94f7-352fa6fe490e",
+      "name": "only stocks shall pass"
+    },
+    {
+      "parameters": {
+        "url": "https://www.nseindia.com/api/NextApi/apiClient/GetQuoteApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "functionName",
+              "value": "getCorpBoardMeeting"
+            },
+            {
+              "name": "symbol",
+              "value": "={{ $json.tradingSymbol }}"
+            },
+            {
+              "name": "marketApiType",
+              "value": "equities"
+            },
+            {
+              "name": "type",
+              "value": "W"
+            },
+            {
+              "name": "noOfRecords",
+              "value": "4"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Referer",
+              "value": "https://www.nseindia.com/"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1344,
+        -256
+      ],
+      "id": "9eb8b8c2-0448-413f-98e3-2cd2baef9329",
+      "name": "bm details",
+      "notesInFlow": true,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        672,
+        16
+      ],
+      "id": "4de09f75-43a2-4b1d-88f3-8489d3f471ae",
+      "name": "end"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        -192
+      ],
+      "id": "0e7cdb62-dc8c-46bc-a7cb-d1bdf90af29f",
+      "name": "Loop Over Items",
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5a6fd979-9571-495a-9250-a0eb92bcc5e6",
+              "name": "tradingSymbol",
+              "value": "={{ $json.Name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        -192
+      ],
+      "id": "aae883ae-7e7c-45e1-b270-f67b5be1cbbd",
+      "name": "required data filter1",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1568,
+        -96
+      ],
+      "id": "72f8ead7-0e96-46ea-8b76-f407d081e452",
+      "name": "Wait",
+      "webhookId": "ff915677-aa7d-4f1f-a99e-8399854b78dc",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c67ccec7-286d-40b9-b9cd-1bccffd64ca2",
+              "leftValue": "={{ $json.bm_symbol }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1568,
+        -304
+      ],
+      "id": "a2bb9153-5355-491a-a733-54b19b8ace77",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "yet332005@gmail.com",
+          "mode": "list",
+          "cachedResultName": "yet332005@gmail.com"
+        },
+        "returnAll": true,
+        "timeMin": "={{ DateTime.fromFormat($('Earning\\'s data').item.json.bm_date, 'dd-LLL-yyyy', { zone: 'Asia/Kolkata' }).toFormat('yyyy-MM-dd') }}",
+        "timeMax": "={{ DateTime.fromFormat($('Earning\\'s data').item.json.bm_date, 'dd-LLL-yyyy', { zone: 'Asia/Kolkata' }).plus({ days: 1 }).toFormat('yyyy-MM-dd') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2016,
+        -304
+      ],
+      "id": "f1c10c4e-2a06-4a53-8689-956e68c4463f",
+      "name": "Get many events",
+      "notesInFlow": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "1dBnuJxUgbVyjwIK",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d85aecd0-ac24-4ae6-8294-78495b216494",
+              "leftValue": "={{ $json.summary }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "a3307119-f681-41c3-9deb-8e8768a719de",
+              "leftValue": "={{ $json.summary }}",
+              "rightValue": "={{ $('Earning\\'s data').item.json.bm_symbol }} {{ $('Earning\\'s data').item.json.bm_purpose }}",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            },
+            {
+              "id": "c75de788-521a-4df7-a6af-18fa20d0ddb3",
+              "leftValue": "={{ $json.summary }}",
+              "rightValue": "={{ $('Earning\\'s data').item.json.bm_symbol }}",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2240,
+        -304
+      ],
+      "id": "4055e566-3807-4518-bbf0-86b3c01b6c8c",
+      "name": "event exist or nope"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        -304
+      ],
+      "id": "825e01aa-ad6a-41c2-91bc-97490a7c8925",
+      "name": "Earning's data"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "yet332005@gmail.com",
+          "mode": "list",
+          "cachedResultName": "yet332005@gmail.com"
+        },
+        "start": "={{ DateTime.fromFormat($('Earning\\'s data').item.json.bm_date, 'dd-LLL-yyyy', { zone: 'Asia/Kolkata' }).toFormat('yyyy-MM-dd') }}",
+        "end": "={{ DateTime.fromFormat($('Earning\\'s data').item.json.bm_date, 'dd-LLL-yyyy', { zone: 'Asia/Kolkata' }).plus({ days: 1 }).toFormat('yyyy-MM-dd') }}",
+        "useDefaultReminders": false,
+        "additionalFields": {
+          "allday": "yes",
+          "attendees": [],
+          "color": "4",
+          "description": "={{ $('Earning\\'s data').item.json.bm_desc }}",
+          "summary": "={{ $('Earning\\'s data').item.json.bm_symbol }} {{ $('Earning\\'s data').item.json.bm_purpose }}"
+        },
+        "remindersUi": {
+          "remindersValues": [
+            {
+              "method": "popup",
+              "minutes": 360
+            },
+            {
+              "method": "popup",
+              "minutes": 720
+            },
+            {
+              "method": "popup",
+              "minutes": 1440
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2464,
+        -208
+      ],
+      "id": "c285e903-c439-47ca-bf78-c19504575e9d",
+      "name": "new event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "1dBnuJxUgbVyjwIK",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8152187747",
+        "text": "=🔔 <b>New Board Meeting Alert</b> 🔔\n\n🏢 <b>News:</b> {{ $json.summary || ($('Earning\\'s data').item.json.bm_symbol + ' ' + $('Earning\\'s data').item.json.bm_purpose) }}\n📅 <b>Meeting Date:</b> {{ $json.start.date }}\n📡 <b>Broadcasted:</b> {{ $('Earning\\'s data').item.json.bm_timestamp }}\n\n📝 <b>Purpose:</b> {{ $json.description}}\n\n",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2688,
+        -208
+      ],
+      "id": "04b55422-031b-447c-b100-d8d67f49232b",
+      "name": "Send a text message",
+      "webhookId": "7810bd47-e30b-4ed8-bee5-276813322891",
+      "credentials": {
+        "telegramApi": {
+          "id": "lXcmcjLFhuwuS25x",
+          "name": "boardroom staker bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6,8,9,10,11,12,15,16,17,18,19,20 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        -96
+      ],
+      "id": "1aae33e7-c1c5-4389-b7ba-617d8528dc81",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1SmZQFGs88wrjtfHlWAaU5LTBUOU0oBvnESEXY3sXMc8",
+          "mode": "list",
+          "cachedResultName": "holdings_dhan",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SmZQFGs88wrjtfHlWAaU5LTBUOU0oBvnESEXY3sXMc8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "stock_holdings",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SmZQFGs88wrjtfHlWAaU5LTBUOU0oBvnESEXY3sXMc8/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        16
+      ],
+      "id": "6c0ea5b5-3dbd-4474-80b1-3d2dc5d3122a",
+      "name": "Get row(s) in sheet",
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jnP03qvNFJx2XWJX",
+          "name": "G-sheets 1"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "19868772-e122-4a32-9916-c29a7756d131",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "2f709275-9199-4be7-a646-63c6049520c5",
+              "name": "description",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "7f3cb49c-4958-48f5-b6a7-c0f121ad3ae0",
+              "name": "date",
+              "value": "={{ $json.start }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2464,
+        -400
+      ],
+      "id": "009c50d4-dc3b-40c1-98b8-a073964e0539",
+      "name": "seprate data for telegram"
+    },
+    {
+      "parameters": {
+        "chatId": "8152187747",
+        "text": "=n8n boardroom staker was ran @ {{ $json['Readable date'] }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        -288
+      ],
+      "id": "9349966b-f7d6-44f0-9b0d-295c1609bfbd",
+      "name": "Send a text message1",
+      "webhookId": "f1a5ecdd-0c29-43b0-a463-f29e0dd371d5",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "LN6XK2AMIqIom4ZH",
+          "name": "first_testing_bot"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        896,
+        -192
+      ],
+      "id": "f8d1da59-c563-422f-892e-1db2c68b4bd8",
+      "name": "testing Limiter",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "chatId": "8152187747",
+        "text": "Google doxc error happened @ {{ $json['Readable date'] }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        112
+      ],
+      "id": "39ad27fc-a9aa-46df-b783-0d4af0741762",
+      "name": "send error message",
+      "webhookId": "09b9f219-b452-4766-98df-4c5c59ff0d2d",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "telegramApi": {
+          "id": "LN6XK2AMIqIom4ZH",
+          "name": "first_testing_bot"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "8152187747",
+        "text": "telegram workflow ran error happened @ {{ $json['Readable date'] }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        -288
+      ],
+      "id": "556738e7-85e6-4699-a773-c23b9bc0d5d8",
+      "name": "send error message1",
+      "webhookId": "09b9f219-b452-4766-98df-4c5c59ff0d2d",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "telegramApi": {
+          "id": "LN6XK2AMIqIom4ZH",
+          "name": "first_testing_bot"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "only stocks shall pass": {
+      "main": [
+        [
+          {
+            "node": "required data filter1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "end",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "bm details": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "bm details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "required data filter1": {
+      "main": [
+        [
+          {
+            "node": "testing Limiter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Earning's data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many events": {
+      "main": [
+        [
+          {
+            "node": "event exist or nope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "event exist or nope": {
+      "main": [
+        [
+          {
+            "node": "seprate data for telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "new event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Earning's data": {
+      "main": [
+        [
+          {
+            "node": "Get many events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "new event": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "only stocks shall pass",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "send error message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "seprate data for telegram": {
+      "main": [
+        []
+      ]
+    },
+    "testing Limiter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "send error message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "1902c8a5-213c-459e-9b05-c55811e43c65",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "65908984a191fad7611ec5aaa31be094ca3c0e85a65ae109bd1711c5a5c0d154"
+  },
+  "id": "9VhCKXrQgD9wPBbL",
+  "tags": []
+}
